@@ -5,12 +5,62 @@
 
 abstract class Validator {
 
-	private function connect_db() {
+	private static function connect_db() {
 		return Database::getInstance();
 	}
 
+	public static function validateReview($params) {
+		self::findEmpty(array(
+								$params['rating'],
+								$params['name'],
+								$params['email'],
+								$params['review'],
+							));
 
-	static function validateCheckout($params) {
+		if (!filter_var($params['email'], FILTER_VALIDATE_EMAIL)) {
+			throw new Exception('This (' . $email . ') email address is not valid!');
+		}
+
+		$rating = filter_var($params['rating'], FILTER_SANITIZE_NUMBER_INT);
+		if ($rating > 5) {
+			$rating = 5;
+		}
+
+		$name = filter_var($params['name'], FILTER_SANITIZE_STRING);
+		$email = $params['email'];
+		$review = filter_var($params['review'], FILTER_SANITIZE_STRING);
+
+		self::check_length(array(
+									array(
+										'name' => 'Name',
+										'value' => $name,
+										'min_length' => '2',
+										'max_length' => '50'
+										),
+									array(
+										'name' => 'Email',
+										'value' => $email,
+										'min_length' => '6',
+										'max_length' => '100'
+										),
+									array(
+										'name' => 'Review',
+										'value' => $review,
+										'min_length' => '4',
+										'max_length' => '1000'
+										)
+								));
+		
+		return array(
+						'name' => $name,
+						'email' => $email,
+						'review' => $review,
+						'rating' => $rating
+					);
+	}
+
+
+	public static function validateCheckout($params) {
 		self::findEmpty(array(
 								$params['name'],
 								$params['email'],
@@ -64,7 +114,7 @@ abstract class Validator {
 	}
 
 
-	static function validateCategory($category) {
+	public static function validateCategory($category) {
 
 		self::findEmpty(array('category' => $category));
 
@@ -77,7 +127,7 @@ abstract class Validator {
 		return array('category' => $category);
 	}
 
-	static function validateBrand($brand) {
+	public static function validateBrand($brand) {
 
 		self::findEmpty(array('brand' => $brand));
 
@@ -90,7 +140,7 @@ abstract class Validator {
 		return array('brand' => $brand);
 	}
 
-	static function validateItemParams($params) {
+	public static function validateItemParams($params) {
 
 		self::findEmpty(array(
 								$params['category'],
@@ -147,7 +197,7 @@ abstract class Validator {
 					);
 	}
 
-	static function validateUserLoginParams($params) {
+	public static function validateUserLoginParams($params) {
 
 		$id = '';
 
@@ -163,7 +213,7 @@ abstract class Validator {
 			throw new Exception("User with this email($email) didn't exists");
 		}
 		//password checking
-		if (!(self::genHash($password, $user_data['salt'], $user_data['iterations']) == $user_data['hash'])) {
+		if (!(self::_genHash($password, $user_data['salt'], $user_data['iterations']) == $user_data['hash'])) {
 			throw new Exception("Unable to log in.<br>Please check that you have entered your email and password correctly.");
 		}
 
@@ -174,7 +224,7 @@ abstract class Validator {
 					);
 	}
 
-	static function validateUserRegParams($params) {
+	public static function validateUserRegParams($params) {
 
 		//check for empty params(that guest can send manualy)
 		self::findEmpty(array(
@@ -236,7 +286,7 @@ abstract class Validator {
 
 		$salt = $params['salt'];
 		if (empty($salt)) {
-			$salt = self::genSalt();
+			$salt = self::_genSalt();
 		}
 
 		$iterations = self::clearInt($params['iterations']);
@@ -244,7 +294,7 @@ abstract class Validator {
 			$iterations = rand(1,100);
 		}
 
-		$hash = self::genHash($password, $salt, $iterations);
+		$hash = self::_genHash($password, $salt, $iterations);
 
 
 		return array(
@@ -259,7 +309,7 @@ abstract class Validator {
 					);
 	}
 
-	static function validateEmail($email) {
+	public static function validateEmail($email) {
 		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			throw new Exception('This (' . $email . ') email address is not valid!');
 		}
@@ -269,16 +319,16 @@ abstract class Validator {
 		}
 	}
 
-	static function validatePassword($password) {
+	public static function validatePassword($password) {
 	}
 
-	static function validateImage($file, $path) {
+	public static function validateImage($file, $path) {
 		self::validateFile($file, array('image/jpeg'), $path);
 
 		return $file['name'];
 	}
 
-	static function validateFile($file, $formats, $path) {
+	public static function validateFile($file, $formats, $path) {
 		$error = $file['error'];
 		if ($error != 0) {
 			switch ($error) {
@@ -302,7 +352,7 @@ abstract class Validator {
 		}
 	}
 
-	static function findEmpty($params) {
+	public static function findEmpty($params) {
 		foreach ($params as $key => $value) {
 			if (empty($value)) {
 				throw new Exception('Please fill in all fields!');
@@ -310,7 +360,7 @@ abstract class Validator {
 		}
 	}
 
-	static function check_length($strs_array) {
+	public static function check_length($strs_array) {
 		foreach ($strs_array as $str) {
 			$str_name = $str['name'];
 			$str_value = $str['value'];
@@ -327,21 +377,21 @@ abstract class Validator {
 		}
 	}
 
-	static function check_str_min_length($str, $min_length) {
+	public static function check_str_min_length($str, $min_length) {
 		if (strlen($str) < $min_length) {
 			return false;
 		}
 		return true;
 	}
 
-	static function check_str_max_length($str, $max_length) {
+	public static function check_str_max_length($str, $max_length) {
 		if (strlen($str) > $max_length) {
 			return false;
 		}
 		return true;
 	}
 
-	static function find_matches($table, $field, $field_value) {
+	public static function find_matches($table, $field, $field_value) {
 		$db = self::connect_db();
 		$field_value = $db -> quote($field_value);
 		$sql = "SELECT id
@@ -358,7 +408,7 @@ abstract class Validator {
 		return false;
 	}
 
-	static function find_user_by_email($email) {
+	public static function find_user_by_email($email) {
 		$db = self::connect_db();
 		$email = $db -> quote($email);
 		$sql = "SELECT id, hash, salt, iterations, role
@@ -381,12 +431,12 @@ abstract class Validator {
 		return false;
 	}
 
-	private function genSalt()
+	private static function _genSalt()
 	{
 			return str_replace('=', '', base64_encode(md5(microtime() . '4324IHDDDS8127DAS992NSQ')));
 	}
 
-	private function genHash($password, $salt, $iterations)
+	private static function _genHash($password, $salt, $iterations)
 	{
 		for($i = 0; $i < $iterations; $i++)
 		{
@@ -395,11 +445,11 @@ abstract class Validator {
 		return $hash;
 	}
 
-	static function clearInt($int) {
+	public static function clearInt($int) {
 		return abs((int)$int);
 	}
 
-	static function clearFloat($float) {
+	public static function clearFloat($float) {
 		return abs(floatval($float));
 	}
 

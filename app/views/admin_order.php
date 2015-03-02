@@ -1,4 +1,11 @@
 <div class="container col-lg-9 col-md-9 col-sm-12">
+	<?if(!empty($success)):?>
+		<div class="alert alert-success" role="alert"><?=$success?></div>
+	<?endif;?>
+
+	<?if(!empty($error)):?>
+		<div class="alert alert-danger" role="alert"><?=$error?></div>
+	<?endif;?>
 	<div class="row">
 	<div class="order_title">
 		<h3>Order #<?=$order['order']['order_id']?></h3>
@@ -88,15 +95,15 @@
 	<div class="row adm-order-btn">
 
 		<div class="col-lg-3 col-md-4 col-sm-4">
-			<form name="buy-item" action="/confirm/<?=$order['order_id']?>" method="post">
-				<button class="btn btn-success <?if ($order['confirmed'] === 1):?>disabled<?endif;?>" type="submit">
+			<form name="buy-item" action="/confirm/<?=$order['order']['order_id']?>" method="post">
+				<button class="btn btn-success <?if ($order['order']['confirmed']  == 1):?>disabled<?endif;?>" type="submit">
 					<i class="glyphicon glyphicon-ok"></i> Confirm
 				</button>
 			</form>
 		</div>
 
 		<div class="col-lg-3 col-md-4 col-sm-4">
-			<form name="buy-item" action="/delorder/<?=$order['order_id']?>" method="post">
+			<form name="buy-item" action="/delorder/<?=$order['order']['order_id']?>" method="post">
 				<button class="btn btn-danger" type="submit">
 					<i class="glyphicon glyphicon-remove"></i> Remove
 				</button>

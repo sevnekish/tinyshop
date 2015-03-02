@@ -5,7 +5,7 @@
 
 abstract class UsersFactory {
 	static function createUser() {
-		$role = self::defineUserRole();
+		$role = self::_defineUserRole();
 
 		switch ($role) {
 			case 'guest': return new UserGuest(); break;
@@ -14,7 +14,7 @@ abstract class UsersFactory {
 		}
 	}
 
-	private function defineUserRole() {
+	private static function _defineUserRole() {
 		if (isset($_SESSION['user'])) {
 			return 'user';
 		}

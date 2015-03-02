@@ -12,17 +12,17 @@ class ShoppingCart {
 	private $_cart = array();
 
 	public function __construct() {
-		self::initCart();
+		$this -> _initCart();
 	}
 
-	private function connect_db() {
+	private function _connect_db() {
 		return Database::getInstance();
 	}
 
-	private function initCart() {
+	private function _initCart() {
 		if (!isset($_COOKIE['cart'])) {
 			$this -> _cart = array('order_id' => uniqid());
-			self::saveCart();
+			$this -> saveCart();
 		} else {
 			$this -> _cart = unserialize(base64_decode($_COOKIE['cart']));
 		}
@@ -48,10 +48,10 @@ class ShoppingCart {
 		if (array_key_exists($id, $this -> _cart)) {
 			$new_quantity = $this -> _cart[$id] + $quantity;
 			$this -> _cart[$id] = $new_quantity;
-			self::saveCart();
+			$this -> saveCart();
 		} else {
 			$this -> _cart[$id] = $quantity;
-			self::saveCart();
+			$this -> saveCart();
 		}
 	}
 
@@ -61,11 +61,11 @@ class ShoppingCart {
 		}
 
 		unset($this -> _cart[$id]);
-		self::saveCart();
+		$this -> saveCart();
 	}
 
 	public function getCartArray() {
-		$db = self::connect_db();
+		$db = $this -> _connect_db();
 
 		$cart = $this -> _cart;
 

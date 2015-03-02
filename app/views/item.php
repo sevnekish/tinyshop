@@ -87,7 +87,7 @@
 					</div>
 
 					<div class="panel-body">
-						 <?=nl2br($item['characteristics']);?>
+						<?=nl2br($item['characteristics']);?>
 					</div>
 				</div>
 			</div>

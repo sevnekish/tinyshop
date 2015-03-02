@@ -3,29 +3,10 @@
 class UserAuthorized extends User implements IOrders{
 	protected $_role = 'user';
 
-	function registrateNewUser() {}
+	public function registrateNewUser() {}
 
-	function getInfo() {
 
-		$email = $this -> _db -> quote($this -> _email);
-
-		$sql = "SELECT id, name, email, telephone, address 
-				FROM users 
-				WHERE email=$email
-				";
-		$stmt = $this -> _db -> query($sql);
-		$stmt = $stmt -> fetch(PDO::FETCH_ASSOC);
-
-		return array(
-						'id' => $stmt['id'],
-						'name' => $stmt['name'],
-						'email' => $stmt['email'],
-						'telephone' => $stmt['telephone'],
-						'address' => $stmt['address']
-					);
-	}
-
-	function getOrders($confirmed = null, $total_orders = null, $orders_per_page = null, $cur_page = null) {
+	public function getOrders($confirmed = null, $total_orders = null, $orders_per_page = null, $cur_page = null) {
 		$user_id = Validator::find_matches('users', 'email', $this -> _email);
 
 		$sql = "SELECT order_id, sum, date, confirmed
@@ -46,7 +27,7 @@ class UserAuthorized extends User implements IOrders{
 		return $orders;
 	}
 
-	function getOrder($order_id) {
+	public function getOrder($order_id) {
 		$user_id = Validator::find_matches('users', 'email', $this -> _email);
 
 		$sql_order_info = "
@@ -102,7 +83,7 @@ class UserAuthorized extends User implements IOrders{
 
 	}
 
-	function countOrders($confirmed = 'all') {
+	public function countOrders($confirmed = 'all') {
 		$user_id = Validator::find_matches('users', 'email', $this -> _email);
 
 		switch ($confirmed) {

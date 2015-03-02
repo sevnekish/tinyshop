@@ -214,6 +214,29 @@ div .media-body {
 	width: 100%;
 }
 
+/*reviews*/
+
+.review-form {
+	/*margin-top: 50px;*/
+	background-color: #F6F6F6;
+	border-radius: 4px 4px 4px 4px;
+	border: 1px solid #E1E1E1;
+	padding-top: 50px;
+	padding-bottom: 50px;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, .125);
+
+}
+
+.lead .starrr {
+	color: #4D4D4D;
+	text-align: center;
+	text-shadow: 0 3px 5px rgba(0, 0, 0, .125);
+}
+
+.reviews {
+	margin-top: 50px;
+}
+
 /*404 error*/
 .error-template {padding: 40px 15px;text-align: center;}
 .error-actions {margin-top:15px;margin-bottom:15px;}

@@ -19,28 +19,30 @@ abstract class User implements IUser {
 	 */
 	protected $_db;
 
-	function __construct($email = null) {
+	public function __construct($email = null) {
 		$this -> _email = $email;
 
 		$this -> _db = Database::getInstance();
 	}
 
-	function getRole() {
+	public function getRole() {
 		return $this -> _role;
 	}
 
-	function getEmail() {
+	public function getEmail() {
 		return $this -> _email;
 	}
 
-	function getParams() {
+	public function getParams() {
 		return array(
-						'role' => self::getRole(),
-						'email' => self::getEmail()
+						'role' => $this -> getRole(),
+						'email' => $this -> getEmail()
 					);
 	}
 
-	function getCategories() {
+
+
+	public function getCategories() {
 		$sql = 'SELECT * FROM categories';
 		$stmt = $this -> _db -> query($sql);
 		$categories = array();
@@ -50,7 +52,7 @@ abstract class User implements IUser {
 		return $categories;
 	}
 
-	function getBrands() {
+	public function getBrands() {
 		$sql = 'SELECT * FROM brands';
 		$stmt = $this -> _db -> query($sql);
 		$brands = array();
@@ -61,13 +63,37 @@ abstract class User implements IUser {
 		return $brands;
 	}
 
+	public function getInfo() {
+
+		if ($this -> _role == 'user' or $this -> _role == 'admin') {
+			$email = $this -> _db -> quote($this -> _email);
+
+			$sql = "SELECT id, name, email, telephone, address 
+					FROM users 
+					WHERE email=$email
+					";
+			$stmt = $this -> _db -> query($sql);
+			$stmt = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+			return array(
+							'id' => $stmt['id'],
+							'name' => $stmt['name'],
+							'email' => $stmt['email'],
+							'telephone' => $stmt['telephone'],
+							'address' => $stmt['address']
+						);
+		} else {
+			return false;
+		}
+	}
+
 
 	/**
 	 * Get Items from (DB)catalog
 	 * 
 	 * @return array Array of Products 
 	 */
-	function getItems($category_id, $sort, $total_items, $items_per_page, $cur_page) {
+	public function getItems($category_id, $sort, $total_items, $items_per_page, $cur_page) {
 		$category_id = $this -> _db -> quote($category_id);
 
 		switch ($sort) {
@@ -122,7 +148,7 @@ abstract class User implements IUser {
 		return $items;
 	}
 
-	function getItem($item_id) {
+	public function getItem($item_id) {
 		$item_id = $this -> _db -> quote($item_id);
 
 
@@ -148,14 +174,38 @@ abstract class User implements IUser {
 		return $item;
 	}
 
-	function countPages($total_items, $items_per_page) {
+	public function getItemsRandom($number) {
+		$sql_ids = "
+						SELECT id
+						FROM catalog
+						WHERE instock > 0
+					";
+		$stmt = $this -> _db -> query($sql_ids);
+
+		$ids = array();
+
+		while ($item = $stmt -> fetch(PDO::FETCH_ASSOC)) {
+			$ids[] = $item['id'];
+		}
+		shuffle($ids);
+
+		$items_random = array();
+
+		for ($i = 0; $i < $number; $i++) {
+			$items_random[] = $this -> getItem($ids[$i]);
+		}
+
+		return $items_random;
+	}
+
+	public function countPages($total_items, $items_per_page) {
 
 		$total_pages = ceil($total_items / $items_per_page);
 		
 		return $total_pages;
 	}
 
-	function countItems($category) {
+	public function countItems($category) {
 		$category = $this -> _db -> quote($category);
 		$sql = "SELECT count(id)
 				FROM catalog
@@ -175,34 +225,91 @@ abstract class User implements IUser {
 		return $total_items;
 	}
 
+	public function countReviews() {
+		$sql = "
+				SELECT count(id)
+				FROM reviews
+				";
+		if (!$stmt = $this -> _db -> query($sql)) {
+			return false;
+		}
+
+		$stmt = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+		$total_reviews = $stmt['count(id)'];
+
+		if ($total_reviews == 0) {
+			return false;
+		}
+
+		return $total_reviews;
+	}
+
 
 	/**
 	 * Get Reviews from DB
 	 * 
 	 * @return array Array of Reviews with elements: 
 	 */
-	function getReviews() {
-		if ($this -> _role == 'Admin') {
+	public function getReviews($total_reviews, $reviews_per_page, $cur_page) {
 
+		$first_id = $cur_page * $reviews_per_page - $reviews_per_page;
+
+		//checking amount of reviews on current page
+		if (($total_reviews - ($cur_page * $reviews_per_page)) < 0) {
+			$reviews_per_page = $total_reviews - (($cur_page - 1) * $reviews_per_page);
 		}
+
+		$sql = "
+				SELECT id, name, email, review, rating, date
+				FROM reviews
+				ORDER by date DESC
+				LIMIT $first_id,$reviews_per_page
+			";
+
+		if (!$stmt = $this -> _db -> query($sql)) {
+			return false;
+		}
+
+		$reviews = array();
+		
+		while ($review = $stmt -> fetch(PDO::FETCH_ASSOC)) {
+			$reviews[] = $review;
+		}
+
+		return $reviews;
+	}
+
+	public function addReview($params) {
+		$valid_review_params = Validator::validateReview($params);
+
+		if ($user_params = $this -> getInfo()) {
+			$valid_review_params['name'] = $user_params['name'];
+			$valid_review_params['email'] = $user_params['email'];
+		}
+		
+		if(!$this -> addToDb('reviews', $valid_review_params)) {
+			throw new Exception('Adding operation failed!');
+		}
+
 	}
 
 
-	function logout() {
+	public function logout() {
 		unset($_SESSION[$this -> _role]);
 	}
 
 
-	function registrateNewUser($params) {
+	public function registrateNewUser($params) {
 
 		$valid_params = Validator::validateUserRegParams($params);
 
-		if(!self::addToDb('users', $valid_params)) {
+		if(!$this -> addToDb('users', $valid_params)) {
 			throw new Exception('Adding operation failed!');
 		}
 	}
 
-	function checkout($params, $cart_array, $sum) {
+	public function checkout($params, $cart_array, $sum) {
 		//name, email, telephone, address
 		$valid_user_params = Validator::validateCheckout($params);
 
@@ -251,7 +358,7 @@ abstract class User implements IUser {
 		}
 	}
 
-	function addToDb($table_name, $params) {
+	public function addToDb($table_name, $params) {
 
 		$names_array = array_keys($params);
 		$values_arr = array_values($params);

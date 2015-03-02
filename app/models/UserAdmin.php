@@ -3,7 +3,7 @@
 class UserAdmin extends User implements IOrders {
 	protected $_role = 'admin';
 
-	function getOrders($confirmed, $total_orders, $orders_per_page, $cur_page) {
+	public function getOrders($confirmed, $total_orders, $orders_per_page, $cur_page) {
 		switch ($confirmed) {
 					case 'all':
 						$clause = '';
@@ -52,7 +52,7 @@ class UserAdmin extends User implements IOrders {
 		return $orders;
 	}
 
-	function getOrder($order_id) {
+	public function getOrder($order_id) {
 		$sql_order_info = "
 							SELECT order_id, user_id, name, email, telephone, address, sum, date, confirmed
 							FROM orders
@@ -109,7 +109,7 @@ class UserAdmin extends User implements IOrders {
 
 	}
 
-	function confirmOrder($order_id) {
+	public function confirmOrder($order_id) {
 		$sql_ordered_items_info = "
 						SELECT item_id, quantity
 						FROM ordered_items
@@ -184,7 +184,7 @@ class UserAdmin extends User implements IOrders {
 
 	}
 
-	function delOrder($order_id) {
+	public function delOrder($order_id) {
 		$sql_orders = "
 						DELETE FROM orders
 						WHERE order_id='$order_id'
@@ -211,7 +211,7 @@ class UserAdmin extends User implements IOrders {
 	}
 
 
-	function countOrders($confirmed) {
+	public function countOrders($confirmed) {
 
 		switch ($confirmed) {
 			case 'all':
@@ -245,37 +245,37 @@ class UserAdmin extends User implements IOrders {
 		return $orders;
 	}
 
-	function addCategory($category) {
+	public function addCategory($category) {
 		$valid_category = Validator::validateCategory($category);
 
 		
-		if(!self::addToDb('categories', $valid_category)) {
+		if(!$this -> addToDb('categories', $valid_category)) {
 			throw new Exception('Adding operation failed!');
 		}
 	}
 
-	function addBrand($brand) {
+	public function addBrand($brand) {
 
 		$valid_brand = Validator::validateBrand($brand);
 
-		if(!self::addToDb('brands', $valid_brand)) {
+		if(!$this -> addToDb('brands', $valid_brand)) {
 			throw new Exception('Adding operation failed!');
 		}
 	}
 
-	function addItem($params) {
+	public function addItem($params) {
 
 		$valid_params = Validator::validateItemParams($params);
 
 		$upload_dir = $params['upload_dir'];
 		$upload_file = $upload_dir . $params['photo']['name'];
 
-		if (!self::makeImageSquare($params['photo'])) {
+		if (!$this -> makeImageSquare($params['photo'])) {
 			throw new Exception('Resize operation failed!');
 		}
 
-		if (self::uploadFile($params['photo']['tmp_name'], $upload_file )) {
-			if (!self::addToDb('catalog', $valid_params)) {
+		if ($this -> uploadFile($params['photo']['tmp_name'], $upload_file )) {
+			if (!$this -> addToDb('catalog', $valid_params)) {
 				//delete alredy aploaded file if ading to DB failed
 				unlink($upload_file);
 				throw new Exception('Adding operation failed!');
@@ -285,14 +285,14 @@ class UserAdmin extends User implements IOrders {
 		}
 	}
 
-	function uploadFile($tmp_name, $upload_file) {
+	public function uploadFile($tmp_name, $upload_file) {
 		if (!move_uploaded_file($tmp_name, $upload_file)) {
 			return false;
 		}
 		return true;
 	}
 
-	function makeImageSquare($file) {
+	public function makeImageSquare($file) {
 		$tmp_file = $file['tmp_name'];
 
 		$image_orig = imagecreatefromjpeg($tmp_file);

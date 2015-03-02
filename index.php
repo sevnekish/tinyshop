@@ -84,16 +84,24 @@ $app -> hook('slim.after.dispatch', function() use ($app, $user) {
 	$app -> render('footer.php');
 });
 
-$app -> get("/", function() use ($app) {
-	$app -> render('home.php');
-});
+$app -> get("/", function() use ($app, $user) {
 
-$app -> get("/catalog", function() use ($app) {
-	$app -> redirect("/");
+	$items = $user -> getItemsRandom(6);
+
+	$app -> render('home.php', array('items' => $items));
 });
 
 $app -> get("/logreg", function() use ($app) {
 	$app -> redirect("/");
+});
+
+$app -> get("/catalog", function() use ($app, $user) {
+
+	$items = $user -> getItemsRandom(12);
+
+	$app -> render('catalog_main.php', array(
+											'items' => $items
+										));
 });
 
 $app -> get("/catalog/:category(/:page(/:sort))", function($category, $page = 1, $sort = 'cheap')
@@ -135,8 +143,26 @@ $app -> get("/item/:id", function($id) use ($app, $user) {
 									));
 });
 
-$app -> get("/reviews", function() use ($app) {
-	$app -> render('reviews.php');
+$app -> get("/reviews(/:page)", function($page = 1) use ($app, $user) {
+	$reviews_per_page = 6;
+
+	if(!$total_reviews = $user -> countReviews()) {
+		$app -> notFound();
+	}
+
+	$total_pages = $user -> countPages($total_reviews, $reviews_per_page);
+
+	if (!$reviews = $user -> getReviews($total_reviews, $reviews_per_page, $page)) {
+		$app -> notFound();
+	}
+
+	$user_info = $user -> getInfo();
+	$app -> render('reviews.php', array(
+										'user_info' => $user_info,
+										'total_pages' => $total_pages,
+										'cur_page' => $page,
+										'reviews' => $reviews
+									));
 });
 
 $app -> get("/contacts", function() use ($app) {
@@ -496,7 +522,13 @@ $app -> post("/checkout",$access_denied($app, $user, 'admin'), function() use ($
 });
 
 $app -> post("/confirm/:order_id",$authentication($app, $user, 'admin'), function($order_id) use ($app, $user) {
-	$user -> confirmOrder($order_id);
+	try {
+		$user -> confirmOrder($order_id);
+	} catch (Exception $e) {
+		$app -> flash('error', $e -> getMessage());
+		$app -> redirect($_SERVER['HTTP_REFERER']);
+	}
+	$app -> flash('success', 'Order has been confirmed successfully.');
 	$app -> redirect($_SERVER['HTTP_REFERER']);
 });
 
@@ -514,6 +546,26 @@ $app -> post("/delorder/:order_id",$authentication($app, $user, 'admin'), functi
 	$app -> redirect($urlRedirect);
 });
 
+$app -> post("/addreview", function() use ($app, $user) {
+
+	$urlRedirect = '/reviews';
+
+	$params = array(
+					'name' => $app -> request() -> post('name'),
+					'email' => $app -> request() -> post('email'),
+					'review' => $app -> request() -> post('review'),
+					'rating' => $app -> request() -> post('rating')
+					);
+
+	try {
+		$user -> addReview($params);
+	} catch (Exception $e) {
+		$app -> flash('error', $e -> getMessage());
+		$app -> redirect($urlRedirect);
+	}
+	$app -> flash('success', 'Review has been added successfully.');
+	$app -> redirect($urlRedirect);
+});
 
 
 $app -> run();

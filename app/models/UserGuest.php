@@ -3,9 +3,9 @@
 class UserGuest extends User {
 	protected $_role = 'guest';
 
-	function login($params) {
+	public function login($params) {
 		$valid_params = Validator::validateUserLoginParams($params);
-		self::logout();
+		$this -> logout();
 		$_SESSION[$valid_params['role']] = $valid_params['email'];
 	}
 }

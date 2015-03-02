@@ -37,6 +37,8 @@
 		<script src="/app/scripts/registration_form.js"></script>
 		<!--  Add's 'action' class to active admin_bar pills for orders-->
 		<script src="/app/scripts/admin_orders_activator.js"></script>
+		<!--  Star plugin-->
+		<script src="/app/scripts/starplugin.js"></script>
 <!-- header -->
 	<div class="navbar navbar-default navbar-static-top">
 		<div class="container">
