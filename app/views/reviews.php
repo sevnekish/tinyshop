@@ -35,7 +35,7 @@
 						</div>
 					</div>
 
-					<textarea class="form-control" id="message" name="review" placeholder="Message" rows="5"></textarea>
+					<textarea class="form-control" id="message" name="review" placeholder="Message" rows="5" required></textarea>
 					<br />
 
 

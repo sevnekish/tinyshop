@@ -11,10 +11,10 @@
 			<?endif;?>
 
 			<label>Name</label>
-				<input name="name" type="text" value="" class="form-control input-xlarge">
+				<input name="name" type="text" value="" class="form-control input-xlarge" required>
 
 			<label>Email</label>
-				<input name="email" type="text" value="" class="form-control input-xlarge">
+				<input name="email" type="text" value="" class="form-control input-xlarge" required>
 
 			<label for="select1">User rights:</label>
 			<select class="form-control" id="select1" name="role">
@@ -23,19 +23,19 @@
 			</select>
 
 			<label>Password</label>
-				<input name="password" type="text" value="" class="form-control input-xlarge">
+				<input name="password" type="text" value="" class="form-control input-xlarge" required>
 
 			<label>Salt</label>
-				<input name="salt" type="text" value="" class="form-control input-xlarge" placeholder="not required field">
+				<input name="salt" type="text" value="" class="form-control input-xlarge" placeholder="not required field" required>
 
 			<label>Iterations</label>
-				<input name="iterations" type="text" value="" class="form-control input-xlarge" maxlength="3" placeholder="not required field; max value = 100">
+				<input name="iterations" type="text" value="" class="form-control input-xlarge" maxlength="3" placeholder="not required field; max value = 100" required>
 
 			<label>Telephone</label>
-				<input name="telephone" type="text" value="" class="form-control input-xlarge">
+				<input name="telephone" type="text" value="" class="form-control input-xlarge" required>
 
 			<label>Address</label>
-			<textarea name="address" rows="3" class="form-control input-xlarge">
+			<textarea name="address" rows="3" class="form-control input-xlarge" required>
 			</textarea>
 
 			<div>

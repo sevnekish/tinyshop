@@ -27,22 +27,22 @@
 			</select>
 
 			<label>Model</label>
-				<input name="model" type="text" value="" class="form-control input-xlarge" autocomplete="off">
+				<input name="model" type="text" value="" class="form-control input-xlarge" autocomplete="off" required>
 
 			<label>Characteristics</label>
-				<textarea name="characteristics" value="" rows="3" class="form-control input-xlarge">
+				<textarea name="characteristics" value="" rows="3" class="form-control input-xlarge" required>
 				</textarea>
 
 
 			<label>Description</label>
-				<textarea name="description" value="h" rows="3" class="form-control input-xlarge">
+				<textarea name="description" value="h" rows="3" class="form-control input-xlarge" required>
 				</textarea>
 
 			<label>Price</label>
-				<input name="price" type="text" value="" class="form-control input-xlarge" autocomplete="off">
+				<input name="price" type="text" value="" class="form-control input-xlarge" autocomplete="off" required>
 
 			<label>Instock</label>
-				<input name="instock" type="text" value="" class="form-control input-xlarge" max="3" autocomplete="off">
+				<input name="instock" type="text" value="" class="form-control input-xlarge" max="3" autocomplete="off" required>
 
 			<label>Photo</label>
 			<br>

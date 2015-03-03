@@ -503,7 +503,8 @@ $app -> post("/checkout",$access_denied($app, $user, 'admin'), function() use ($
 					'address' => $app -> request() -> post('address')
 					);
 
-	$urlRedirect = '/cart';
+	$urlSuccess = '/cart';
+	$urlError = '/checkout';
 
 	$cart_array = $cart -> getCartArray();
 
@@ -513,12 +514,12 @@ $app -> post("/checkout",$access_denied($app, $user, 'admin'), function() use ($
 		$user -> checkout($params, $cart_array, $sum);
 	} catch (Exception $e) {
 		$app -> flash('error', $e -> getMessage());
-		$app -> redirect($urlRedirect);
+		$app -> redirect($urlError);
 	}
 
 	$cart -> clearCart();
 	$app -> flash('success', 'Your order has been received. Wait for call for confirmation.');
-	$app -> redirect($urlRedirect);
+	$app -> redirect($urlSuccess);
 });
 
 $app -> post("/confirm/:order_id",$authentication($app, $user, 'admin'), function($order_id) use ($app, $user) {

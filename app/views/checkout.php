@@ -12,16 +12,16 @@
 
 
 				<label>Name</label>
-					<input name="name" type="text" value="<?=$user_info['name']?>" class="form-control input-xlarge" autocomplete="off">
+					<input name="name" type="text" value="<?=$user_info['name']?>" class="form-control input-xlarge" autocomplete="off" required>
 
 				<label>Email</label>
-					<input name="email" type="text" value="<?=$user_info['email']?>" class="form-control input-xlarge" autocomplete="off">
+					<input name="email" type="text" value="<?=$user_info['email']?>" class="form-control input-xlarge" autocomplete="off" required>
 
 				<label>Telephone</label>
-					<input name="telephone" type="text" value="<?=$user_info['telephone']?>" class="form-control input-xlarge" autocomplete="off">
+					<input name="telephone" type="text" value="<?=$user_info['telephone']?>" class="form-control input-xlarge" autocomplete="off" required>
 
 				<label>Address</label>
-					<input name="address" type="text" value="<?=$user_info['address']?>" class="form-control input-xlarge" autocomplete="off">
+					<input name="address" type="text" value="<?=$user_info['address']?>" class="form-control input-xlarge" autocomplete="off" required>
 
 				<div>
 					<button class="btn btn-lg btn-primary pull-right btn-adminbar" type="submit">

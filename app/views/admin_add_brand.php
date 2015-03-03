@@ -11,7 +11,7 @@
 			<?endif;?>
 
 			<label>New brand</label>
-				<input name="brand" type="text" value="" class="form-control input-xlarge" autocomplete="off">
+				<input name="brand" type="text" value="" class="form-control input-xlarge" autocomplete="off" required>
 
 			<div>
 				<button class="btn btn-lg btn-primary pull-right btn-adminbar" type="submit">Add brand</button>

@@ -13,14 +13,14 @@
 		<?endif;?>
 
 		<label>Name</label>
-			<input name="name" type="text" value="" class="form-control input-xlarge">
+			<input name="name" type="text" value="" class="form-control input-xlarge" required>
 		<label>Email</label>
-			<input name="email" type="text" value="" class="form-control input-xlarge">
+			<input name="email" type="text" value="" class="form-control input-xlarge" required>
 
 		<label>Password</label>
-			<input id="password1" type="password" name="password" type="text" value="" class="form-control input-xlarge" autocomplete="off">
+			<input id="password1" type="password" name="password" type="text" value="" class="form-control input-xlarge" autocomplete="off" required>
 		<label>Repeat Password</label>
-			<input id="password2" type="password" name="password2" type="text" value="" class="form-control input-xlarge" autocomplete="off">
+			<input id="password2" type="password" name="password2" type="text" value="" class="form-control input-xlarge" autocomplete="off" required>
 			
 		<div class="row">
 			<div class="col-sm-12">
@@ -29,9 +29,9 @@
 		</div>
 
 		<label>Telephone</label>
-			<input name="telephone" type="text" value="" class="form-control input-xlarge">
+			<input name="telephone" type="text" value="" class="form-control input-xlarge" required>
 		<label>Address</label>
-		<textarea name="address" rows="3" class="form-control input-xlarge">
+		<textarea name="address" rows="3" class="form-control input-xlarge" required>
 		</textarea>
 		<br>
 		<div>
