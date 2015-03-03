@@ -567,5 +567,21 @@ $app -> post("/addreview", function() use ($app, $user) {
 	$app -> redirect($urlRedirect);
 });
 
+$app -> post("/delreview/:review_id", $authentication($app, $user, 'admin'), function($review_id) use ($app, $user) {
+
+	$urlRedirect = '/reviews';
+
+	
+
+	try {
+		$user -> deleteReview($review_id);
+	} catch (Exception $e) {
+		$app -> flash('error', $e -> getMessage());
+		$app -> redirect($urlRedirect);
+	}
+	$app -> flash('success', 'Review has been deleted successfully.');
+	$app -> redirect($urlRedirect);
+});
+
 
 $app -> run();

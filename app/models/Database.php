@@ -23,6 +23,10 @@ class Database {
 								$this -> _params['db.user'],
 								$this -> _params['db.password']
 								);
+		//utf-8
+		$this -> _db -> exec("SET NAMES utf8");
+		$this -> _db -> exec("SET CHARACTER SET utf8");
+		$this -> _db -> exec("SET SESSION collation_connection = utf8_general_ci");
 	}
 
 	private function __clone() {}

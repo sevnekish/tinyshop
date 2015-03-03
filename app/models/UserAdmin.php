@@ -334,4 +334,17 @@ class UserAdmin extends User implements IOrders {
 
 	}
 
+	public function deleteReview($review_id) {
+		$sql = "
+					DELETE FROM reviews
+					WHERE id='$review_id'
+				";
+
+		try {
+			$this -> _db -> exec($sql);
+		} catch (PDOException $e) {
+			throw new Exception("Something went wrong. Please try again later.");
+		}
+	}
+
 }

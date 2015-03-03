@@ -71,6 +71,16 @@
 				</div>
 
 				<div class="col-sm-9">
+					<?if ($userparams['role'] === 'admin'):?>
+						<div class="pull-right">
+							<form name="buy-item" action="/delreview/<?=$review['id']?>" method="post">
+								<button class="btn btn-danger" type="submit">
+									<i class="glyphicon glyphicon-remove"></i> Remove
+								</button>
+							</form>
+						</div>
+					<?endif;?>
+					
 					<?=nl2br($review['review']);?>
 				</div>
 			</div>
