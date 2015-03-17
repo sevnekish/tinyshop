@@ -1,5 +1,5 @@
 # Tinyshop
-Tiny shop on slim framework with Bootstrap
+Tiny shop on slim framework with Bootstrap 3
 
 <pre>
 git clone https://github.com/Sevnekish/Tinyshop.git
