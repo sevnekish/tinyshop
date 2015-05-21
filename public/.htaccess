@@ -6,3 +6,7 @@ RewriteEngine On
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
+
+
+php_value display_errors 1
+php_value display_startup_errors 1
