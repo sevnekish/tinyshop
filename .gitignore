@@ -1,5 +1,5 @@
 /vendor
 .env
 
-config.ini
+/config.ini
 *.log
